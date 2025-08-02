@@ -2,8 +2,6 @@
 
 # Library Book Tracking System
 
-![Library Book Tracking System](https://via.placeholder.com/800x200.png?text=Library+Book+Tracking+System)
-
 A robust and efficient system designed to manage books, members, and borrowing activities in a library. This system supports seamless CRUD operations, tracks borrowing history, and provides analytical insights to enhance library management.
 
 ---
