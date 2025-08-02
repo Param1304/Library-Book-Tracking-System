@@ -1,150 +1,289 @@
-# Library-Book-Tracking-System
- Library Book Tracking System enables efficient management of books and members in a library while keeping track of which members have borrowed specific books. This system will support essential operations like adding, updating, and deleting records for books and members and provide analytical insights.
+Library Book Tracking System
 
- The system will:
+A robust and efficient system designed to manage books, members, and borrowing activities in a library. This system supports seamless CRUD operations, tracks borrowing history, and provides analytical insights to enhance library management.
 
-Manage Books: Store details about books, including title, author, genre, publication year, and availability.
-Manage Members: Keep track of library members, including their personal details and membership start date.
-Track Borrowing: Record and manage which members have borrowed which books, including dates of borrowing and returning.
-Support CRUD Operations:
-Add, retrieve, update, and delete books and members.
-Record borrowing and returning activities.
-Generate Analytical Insights:
+Table of Contents
+
+Overview
+Features
+Database Schema
+Core Functionalities
+Analytical Insights
+Setup and Installation
+Usage
+Optimization Strategies
+Contributing
+License
+
+
+Overview
+The Library Book Tracking System is a relational database-driven application designed to streamline library operations. It enables librarians to manage books, register members, track borrowing and returning activities, and generate analytical reports for better decision-making.
+
+Features
+
+Book Management: Add, update, delete, and retrieve book details including title, author, category, and availability.
+Member Management: Register and manage library members with details like name and email.
+Borrowing and Returning: Record and track book borrowing and returning activities, ensuring accurate availability status.
+Analytical Insights:
 List of currently borrowed books.
-Borrowing history of individual members.
-Statistics, such as most borrowed books.
+Borrowing history for individual members.
+Statistics on most borrowed books and category-wise book counts.
 
-Kindly refer to the requirements below to start building your solution
 
-1. Database Design
-Create a database with the following tables:
+Data Integrity: Enforced through primary keys, foreign keys, and constraints.
+Performance Optimization: Indexing and transaction management for efficient operations.
 
-Books Table: Stores information about the books available in the library, including:
 
-Book_ID: Unique identifier for each book.
-Title: Title of the book.
-Author: Author of the book.
-Category: Genre or category of the book.
-Available: Indicates if the book is available for borrowing (1 for available, 0 for borrowed).
-Members Table: Stores information about library members, including:
+Database Schema
+The system uses a relational database with the following tables:
+1. Books
+Stores information about books in the library.
 
-Member_ID: Unique identifier for each member.
-Name: Full name of the member.
-Email: Email address of the member.
-Borrowed_Books Table: Tracks which books are currently borrowed by which members, including:
 
-Borrow_ID: Unique identifier for each borrow record.
-Member_ID: The ID of the member who borrowed the book.
-Book_ID: The ID of the borrowed book.
-Borrow_Date: The date the book was borrowed.
-2. Basic Operations
-Add Books: Add new books to the library.
-Register Members: Add new members to the library.
-Borrow Books:
-Record that a book is borrowed by a member.
-Mark the book as unavailable in the Books table (Available = 0).
-Return Books:
-Record that a book is returned by a member.
-Mark the book as available in the Books table (Available = 1)
 
-Designing a Library Book Tracking System involves creating a relational database to manage books, members, and borrowing records. The approach focuses on robust data relationships, CRUD operations, and analytical queries.
+Column
+Type
+Description
 
-Step 1: Database Design
-1. Identify Core Entities and Relationships
-Books: Manage information about books and their availability status.
-Members: Store details of library members.
-Borrowed_Books: Track borrowing records, linking books to members.
-2. Define Tables
-Books: Tracks book details (Book_ID, Title, Author, Category, Available).
-Members: Stores member information (Member_ID, Name, Email).
-Borrowed_Books: Logs borrowing records (Borrow_ID, Member_ID, Book_ID, Borrow_Date).
-3. Relationships Between Tables
+
+
+Book_ID
+INT
+Unique identifier (Primary Key)
+
+
+Title
+VARCHAR
+Title of the book
+
+
+Author
+VARCHAR
+Author of the book
+
+
+Category
+VARCHAR
+Genre or category of the book
+
+
+Available
+BOOLEAN
+Availability status (1 = available, 0 = borrowed)
+
+
+2. Members
+Stores information about library members.
+
+
+
+Column
+Type
+Description
+
+
+
+Member_ID
+INT
+Unique identifier (Primary Key)
+
+
+Name
+VARCHAR
+Full name of the member
+
+
+Email
+VARCHAR
+Email address (UNIQUE)
+
+
+3. Borrowed_Books
+Tracks borrowing records linking books to members.
+
+
+
+Column
+Type
+Description
+
+
+
+Borrow_ID
+INT
+Unique identifier (Primary Key)
+
+
+Member_ID
+INT
+Foreign Key referencing Members
+
+
+Book_ID
+INT
+Foreign Key referencing Books
+
+
+Borrow_Date
+DATE
+Date the book was borrowed
+
+
+Relationships:
+
 Books.Book_ID → Borrowed_Books.Book_ID (Foreign Key)
 Members.Member_ID → Borrowed_Books.Member_ID (Foreign Key)
-4. Schema Design Principles
-Use Primary Keys for unique identification (Book_ID, Member_ID, Borrow_ID).
-Enforce Foreign Keys to ensure data consistency.
-Use Constraints:
-NOT NULL for required fields.
-BOOLEAN for availability status.
-Step 2: CRUD Operations
+
+
+Core Functionalities
 1. Add Books
-Insert new book records into the Books table.
-Default availability is set to 1 (available).
-Tables Involved: Books
+
+Inserts new book records into the Books table.
+Sets default availability to 1 (available).
 
 2. Register Members
-Add new member records into the Members table.
-Ensure unique email addresses.
-Tables Involved: Members
+
+Adds new member records to the Members table.
+Ensures email uniqueness with constraints.
 
 3. Borrow Books
-Create a new borrowing record in Borrowed_Books.
-Update the Books table to mark the book as unavailable (Available = 0).
-Tables Involved: Borrowed_Books, Books
+
+Creates a borrowing record in Borrowed_Books.
+Updates Books table to mark the book as unavailable (Available = 0).
+Uses transactions to ensure data consistency.
 
 4. Return Books
-Remove the corresponding entry from Borrowed_Books.
-Update the Books table to mark the book as available (Available = 1).
-Tables Involved: Borrowed_Books, Books
 
-Step 3: Key Query Use Cases
-1. List All Available Books
-Fetch books where Available = 1.
-Tables Involved: Books
+Deletes the borrowing record from Borrowed_Books.
+Updates Books table to mark the book as available (Available = 1).
+Uses transactions for reliable operations.
 
-2. Fetch Books Borrowed by a Specific Member
-Join Borrowed_Books with Books to retrieve borrowed books for a specific member (Member_ID).
-Tables Involved: Borrowed_Books, Books
 
-3. Count Total Books by Category
-Group books by Category and count the total books in each group.
-Tables Involved: Books
+Analytical Insights
+The system provides the following analytical queries:
 
-4. List All Members Who Have Borrowed Books
-Use a join between Members and Borrowed_Books to retrieve distinct members who have borrowed books.
-Tables Involved: Members, Borrowed_Books
+List All Available Books:
+Retrieves titles, authors, and categories of books where Available = 1.
 
-Step 4: Transactions for Book Borrowing/Returning
-1. Borrow a Book Transaction Workflow
-Start a Transaction.
-Insert a record in Borrowed_Books.
-Update the Books table to mark the book as unavailable.
-Commit the transaction if successful; otherwise, rollback.
-Tables Involved: Borrowed_Books, Books
 
-2. Return a Book Transaction Workflow
-Start a Transaction.
-Delete the borrowing record from Borrowed_Books.
-Update the Books table to mark the book as available.
-Commit or rollback based on success.
-Tables Involved: Borrowed_Books, Books
+Books Borrowed by a Member:
+Fetches book details and borrowing dates for a specific Member_ID.
 
-Step 5: Analytical Queries
-1. List All Available Books
-Retrieve titles, authors, and categories of all available books.
-Tables Involved: Books
 
-2. Fetch Details of Books Borrowed by a Specific Member
-Retrieve book details and borrowing dates for a member using Member_ID.
-Tables Involved: Borrowed_Books, Books
+Total Books by Category:
+Groups books by Category and counts the total in each group.
 
-3. Count Total Books in Each Category
-Group books by category and count the total books in each group.
-Tables Involved: Books
 
-4. List All Active Borrowers
-Fetch member names and emails who have borrowed books.
-Tables Involved: Members, Borrowed_Books
+Active Borrowers:
+Lists members who have borrowed books, including their names and emails.
 
-Step 6: Optimization Strategies
-1. Indexing
-Add indexes on frequently queried columns:
+
+
+
+Setup and Installation
+Prerequisites
+
+Database Management System (e.g., MySQL, PostgreSQL, SQLite)
+SQL client or interface for executing queries
+Optional: Programming language (e.g., Python, Java) for application integration
+
+Installation Steps
+
+Clone the Repository:git clone https://github.com/yourusername/library-book-tracking-system.git
+
+
+Set Up the Database:
+Create a new database in your DBMS.
+Execute the SQL schema (provided in schema.sql) to create tables.
+
+
+Configure Application:
+Update database connection settings in the application configuration file.
+
+
+Run the Application:
+Follow language-specific instructions to start the application.
+
+
+
+
+Usage
+Example Queries
+
+Add a Book:
+INSERT INTO Books (Book_ID, Title, Author, Category, Available)
+VALUES (1, 'The Great Gatsby', 'F. Scott Fitzgerald', 'Fiction', 1);
+
+
+Register a Member:
+INSERT INTO Members (Member_ID, Name, Email)
+VALUES (1, 'John Doe', 'john.doe@example.com');
+
+
+Borrow a Book:
+START TRANSACTION;
+INSERT INTO Borrowed_Books (Borrow_ID, Member_ID, Book_ID, Borrow_Date)
+VALUES (1, 1, 1, CURDATE());
+UPDATE Books SET Available = 0 WHERE Book_ID = 1;
+COMMIT;
+
+
+Return a Book:
+START TRANSACTION;
+DELETE FROM Borrowed_Books WHERE Borrow_ID = 1;
+UPDATE Books SET Available = 1 WHERE Book_ID = 1;
+COMMIT;
+
+
+List Available Books:
+SELECT Title, Author, Category FROM Books WHERE Available = 1;
+
+
+
+
+Optimization Strategies
+
+Indexing:
+
+Create indexes on:
 Books.Book_ID
 Members.Member_ID
 Borrowed_Books.Book_ID
 Borrowed_Books.Member_ID
-2. Query Execution Plan
-Analyze query performance using execution plans and optimize joins.
-3. Constraints
-Use constraints (NOT NULL, UNIQUE) to ensure data integrity.
+
+
+Improves query performance for frequent lookups and joins.
+
+
+Query Optimization:
+
+Analyze query execution plans to optimize joins and filters.
+Use efficient joins (e.g., INNER JOIN) for borrowing queries.
+
+
+Constraints:
+
+Enforce NOT NULL for required fields.
+Use UNIQUE constraints on Members.Email.
+Implement foreign key constraints for data integrity.
+
+
+Transaction Management:
+
+Use transactions for borrow/return operations to ensure atomicity.
+
+
+
+
+Contributing
+Contributions are welcome! To contribute:
+
+Fork the repository.
+Create a new branch (git checkout -b feature-branch).
+Make your changes and commit (git commit -m 'Add feature').
+Push to the branch (git push origin feature-branch).
+Open a Pull Request.
+
+
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
